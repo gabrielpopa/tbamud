@@ -36,6 +36,9 @@
 
 /* Public functions made available from utils.c. Documentation for all functions
  * are made available with the function definition. */
+#if __APPLE__
+int abs(int v);
+#endif
 void basic_mud_log(const char *format, ...) __attribute__ ((format (printf, 1, 2)));
 void basic_mud_vlog(const char *format, va_list args);
 int touch(const char *path);

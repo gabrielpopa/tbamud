@@ -30,6 +30,9 @@
 #include "dg_scripts.h"
 #include "act.h"
 #include "modify.h"
+#if __APPLE__
+#include <alloca.h>
+#endif
 
 /* Globals */
 const char * RGBone = "F022";

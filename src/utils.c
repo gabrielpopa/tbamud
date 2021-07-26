@@ -23,6 +23,14 @@
 #include "interpreter.h"
 #include "class.h"
 
+#if __APPLE__
+int abs(int value)
+{
+  int const mask = value >> (sizeof(int) * CHAR_BIT - 1);
+  unsigned int res = (value + mask) ^ mask;
+  return res;
+}
+#endif
 
 /** Aportable random number function.
  * @param from The lower bounds of the random number.
@@ -1271,7 +1279,7 @@ IDXTYPE atoidx( const char *str_to_conv )
   /* Check for errors */
   errno = 0;
 
-  result = strtol(str_to_conv, NULL, 10);
+  result = atoi(str_to_conv);
 
   if ( errno || (result > IDXTYPE_MAX) || (result < 0) )
     return NOWHERE; /* All of the NO* settings should be the same */

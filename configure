@@ -893,10 +893,10 @@ echo "$ac_t""$ac_cv_gcc_fnb" 1>&6
 
         
   if test ${ac_cv_char_warn:-ERROR} = no; then
-    MYFLAGS="-Wall"
+    MYFLAGS="-Wall -Wincompatible-library-redeclaration=0"
   else
     if test ${ac_cv_gcc_ncs:-ERROR} = yes; then
-      MYFLAGS="-Wall -Wno-char-subscripts -Wno-unused-but-set-variable"
+      MYFLAGS="-Wall -Wincompatible-library-redeclaration=0 -Wno-char-subscripts -Wno-unused-but-set-variable"
     else
       MYFLAGS=""
     fi
