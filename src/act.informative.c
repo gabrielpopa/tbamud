@@ -806,23 +806,31 @@ ACMD(do_score)
   else
     send_to_char(ch, "\r\n");
 
-  send_to_char(ch, "You have %d(%d) hit, %d(%d) mana and %d(%d) movement points.\r\n",
-	  GET_HIT(ch), GET_MAX_HIT(ch), GET_MANA(ch), GET_MAX_MANA(ch),
-	  GET_MOVE(ch), GET_MAX_MOVE(ch));
+  send_to_char(ch, "You have %s%d%s(%s%d%s) hit, %s%d%s(%s%d%s) mana and %s%d%s(%s%d%s) movement points.\r\n",
+	  BRED, GET_HIT(ch), KNRM, BRED, GET_MAX_HIT(ch), KNRM, 
+    CBBLU(ch, C_NRM), GET_MANA(ch), CCNRM(ch, C_NRM), CCBLU(ch, C_NRM), GET_MAX_MANA(ch), CCNRM(ch, C_NRM), 
+    CBGRN(ch, C_NRM), GET_MOVE(ch), CCNRM(ch, C_NRM), CCGRN(ch, C_NRM), GET_MAX_MOVE(ch), CCNRM(ch, C_NRM));
 
-  send_to_char(ch, "Your armor class is %d/10, and your alignment is %d.\r\n",
-	  compute_armor_class(ch), GET_ALIGNMENT(ch));
+  send_to_char(ch, "Your armor class is %d/10, and your alignment is %s%d%s.\r\n",
+	  compute_armor_class(ch), 
+    IS_GOOD(ch) ? CBBLU(ch, C_NRM) : (IS_EVIL(ch) ? CBRED(ch, C_NRM) : CCNRM(ch, C_NRM)),
+    GET_ALIGNMENT(ch), CCNRM(ch, C_NRM));
 
-  send_to_char(ch, "You have %d exp, %d gold coins, and %d questpoints.\r\n",
-	  GET_EXP(ch), GET_GOLD(ch), GET_QUESTPOINTS(ch));
+  send_to_char(ch, "You have %s%d%s exp, %s%d%s gold coins, and %s%d%s questpoints.\r\n",
+	  CBMAG(ch, C_NRM), GET_EXP(ch), CCNRM(ch, C_NRM), 
+    CBYEL(ch, C_NRM), GET_GOLD(ch), CCNRM(ch, C_NRM), 
+    CBWHT(ch, C_NRM), GET_QUESTPOINTS(ch), CCNRM(ch, C_NRM)
+    );
 
   if (GET_LEVEL(ch) < LVL_IMMORT)
-    send_to_char(ch, "You need %d exp to reach your next level.\r\n",
-	level_exp(GET_CLASS(ch), GET_LEVEL(ch) + 1) - GET_EXP(ch));
+    send_to_char(ch, "You need %s%d%s exp to reach your next level.\r\n",
 
-  send_to_char(ch, "You have earned %d quest points.\r\n", GET_QUESTPOINTS(ch));
-  send_to_char(ch, "You have completed %d quest%s, ",
-       GET_NUM_QUESTS(ch),
+	CBMAG(ch, C_NRM), level_exp(GET_CLASS(ch), GET_LEVEL(ch) + 1) - GET_EXP(ch), CCNRM(ch, C_NRM));
+
+
+  send_to_char(ch, "You have earned %s%d%s quest points.\r\n", CBWHT(ch, C_NRM), GET_QUESTPOINTS(ch), CCNRM(ch, C_NRM));
+  send_to_char(ch, "You have completed %s%d%s quest%s, ",
+       CBWHT(ch, C_NRM), GET_NUM_QUESTS(ch), CCNRM(ch, C_NRM),
        GET_NUM_QUESTS(ch) == 1 ? "" : "s");
   if (GET_QUEST(ch) == NOTHING)
     send_to_char(ch, "and you are not on a quest at the moment.\r\n");

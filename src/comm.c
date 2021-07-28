@@ -1140,15 +1140,15 @@ static char *make_prompt(struct descriptor_data *d)
     size_t len = 0;
 
     *prompt = '\0';
+    struct char_data *ch = d->character;
 
-    if (GET_INVIS_LEV(d->character) && len < sizeof(prompt)) {
+    if (GET_INVIS_LEV(ch) && len < sizeof(prompt)) {
       count = snprintf(prompt + len, sizeof(prompt) - len, "i%d ", GET_INVIS_LEV(d->character));
       if (count >= 0)
         len += count;
     }
     /* show only when below 25% */
-    if (PRF_FLAGGED(d->character, PRF_DISPAUTO) && len < sizeof(prompt)) {
-      struct char_data *ch = d->character;
+    if (PRF_FLAGGED(ch, PRF_DISPAUTO) && len < sizeof(prompt)) {
       if (GET_HIT(ch) << 2 < GET_MAX_HIT(ch) ) {
         count = snprintf(prompt + len, sizeof(prompt) - len, "%dH ", GET_HIT(ch));
         if (count >= 0)
@@ -1165,50 +1165,60 @@ static char *make_prompt(struct descriptor_data *d)
           len += count;
       }
     } else { /* not auto prompt */
-      if (PRF_FLAGGED(d->character, PRF_DISPHP) && len < sizeof(prompt)) {
-        count = snprintf(prompt + len, sizeof(prompt) - len, "%dH ", GET_HIT(d->character));
+      if (PRF_FLAGGED(ch, PRF_DISPHP) && len < sizeof(prompt)) {
+        count = snprintf(prompt + len, sizeof(prompt) - len, "%s%d/%d ", 
+            BRED, GET_HIT(ch), GET_MAX_HIT(ch)
+          );
         if (count >= 0)
           len += count;
       }
 
-      if (PRF_FLAGGED(d->character, PRF_DISPMANA) && len < sizeof(prompt)) {
-        count = snprintf(prompt + len, sizeof(prompt) - len, "%dM ", GET_MANA(d->character));
+      if (PRF_FLAGGED(ch, PRF_DISPMANA) && len < sizeof(prompt)) {
+        count = snprintf(prompt + len, sizeof(prompt) - len, "%s%d/%d ", 
+            BBLU, GET_MANA(ch), GET_MAX_MANA(ch)
+          );
         if (count >= 0)
           len += count;
       }
 
-      if (PRF_FLAGGED(d->character, PRF_DISPMOVE) && len < sizeof(prompt)) {
-        count = snprintf(prompt + len, sizeof(prompt) - len, "%dV ", GET_MOVE(d->character));
+      if (PRF_FLAGGED(ch, PRF_DISPMOVE) && len < sizeof(prompt)) {
+        count = snprintf(prompt + len, sizeof(prompt) - len, "%s%d/%d", 
+            BGRN, GET_MOVE(ch), GET_MAX_MOVE(ch)
+        );
         if (count >= 0)
           len += count;
       }
     }
 
-    if (PRF_FLAGGED(d->character, PRF_BUILDWALK) && len < sizeof(prompt)) {
+    size_t p = sizeof(prompt);
+    count = snprintf(prompt + len, p - len, "%s", CCNRM(ch, C_NRM));
+    len += count;
+
+    if (PRF_FLAGGED(ch, PRF_BUILDWALK) && len < sizeof(prompt)) {
       count = snprintf(prompt + len, sizeof(prompt) - len, "BUILDWALKING ");
       if (count >= 0)
         len += count;
     }
 
-    if (PRF_FLAGGED(d->character, PRF_AFK) && len < sizeof(prompt)) {
+    if (PRF_FLAGGED(ch, PRF_AFK) && len < sizeof(prompt)) {
       count = snprintf(prompt + len, sizeof(prompt) - len, "AFK ");
       if (count >= 0)
         len += count;
     }
 
-     if (GET_LAST_NEWS(d->character) < newsmod)
-     {
-       count = snprintf(prompt + len, sizeof(prompt) - len, "(news) ");
-       if (count >= 0)
-         len += count;
-     }
+   if (GET_LAST_NEWS(ch) < newsmod)
+   {
+     count = snprintf(prompt + len, sizeof(prompt) - len, "(news) ");
+     if (count >= 0)
+       len += count;
+   }
 
-     if (GET_LAST_MOTD(d->character) < motdmod)
-     {
-       count = snprintf(prompt + len, sizeof(prompt) - len, "(motd) ");
-       if (count >= 0)
-         len += count;
-     }
+   if (GET_LAST_MOTD(ch) < motdmod)
+   {
+     count = snprintf(prompt + len, sizeof(prompt) - len, "(motd) ");
+     if (count >= 0)
+       len += count;
+   }
 
     if (len < sizeof(prompt))
       strncat(prompt, "> ", sizeof(prompt) - len - 1);	/* strncat: OK */
